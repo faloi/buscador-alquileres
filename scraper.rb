@@ -44,7 +44,7 @@ class TelegramNotifier
   end
 
   def notify!(resultado)
-    id_viejos = ScraperWiki.select('id from data').map { |x| x['id']}
+    id_viejos = begin ScraperWiki.select('id from data').map { |x| x['id']} rescue [] end
     resultado
       .reject { |aviso| id_viejos.include? aviso[:id] }
       .each { |aviso| send_message! aviso }

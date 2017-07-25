@@ -32,8 +32,21 @@ class ZonaPropWebScraper
   end
 end
 
+class ResultadoDiff
+  def self.solo_nuevos(resultado)
+    id_viejos = begin ScraperWiki.select('id from data').map { |x| x['id']} rescue [] end
+    resultado.reject { |aviso| id_viejos.include? aviso[:id] }
+  end
+end
+
+class LogNotifier
+  def notify!(resultado, nuevos)
+    puts "Se encontraron #{resultado.size} propiedades, de las cuales #{nuevos.size} son nuevas."
+  end
+end
+
 class MorphNotifier
-  def notify!(resultado)
+  def notify!(resultado, nuevos)
     ScraperWiki.save_sqlite([:id], resultado)
   end
 end
@@ -43,11 +56,8 @@ class TelegramNotifier
     @ifttt_key = ifttt_key
   end
 
-  def notify!(resultado)
-    id_viejos = begin ScraperWiki.select('id from data').map { |x| x['id']} rescue [] end
-    resultado
-      .reject { |aviso| id_viejos.include? aviso[:id] }
-      .each { |aviso| send_message! aviso }
+  def notify!(resultado, nuevos)
+    nuevos.each { |aviso| send_message! aviso }
   end
 
   def send_message!(aviso)
@@ -68,4 +78,4 @@ class TelegramNotifier
 end
 
 resultado = ZonaPropWebScraper.new.leer_avisos!
-[TelegramNotifier.new(ENV['MORPH_IFTTT_KEY']), MorphNotifier.new].each { |n| n.notify! resultado }
+[LogNotifier.new, TelegramNotifier.new(ENV['MORPH_IFTTT_KEY']), MorphNotifier.new].each { |n| n.notify! resultado, ResultadoDiff.solo_nuevos(resultado) }

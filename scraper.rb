@@ -20,13 +20,13 @@ class ZonaPropWebScraper
 
     page.search('li.post').map do |aviso|
       {
-        :id => aviso['id'].gsub('aviso-', ''),
-        :tipo => tipo,
-        :titulo => aviso.search('.post-titulo').text,
-        :barrio => aviso.search('.post-location span').text.gsub(', Capital Federal', ''),
-        :direccion => aviso.search('.post-location').text.gsub(/\n|\t/, ''),
-        :precio => aviso.search('.precio-valor').text.strip,
-        :url => 'http://www.zonaprop.com.ar' + aviso.search('.post-titulo a').attr('href').value
+        id: aviso['id'].gsub('aviso-', ''),
+        tipo: tipo,
+        titulo: aviso.search('.post-titulo').text,
+        barrio: aviso.search('.post-location span').text.gsub(', Capital Federal', ''),
+        direccion: aviso.search('.post-location').text.gsub(/\n|\t/, ''),
+        precio: aviso.search('.precio-valor').text.strip,
+        url: 'http://www.zonaprop.com.ar' + aviso.search('.post-titulo a').attr('href').value
       }
     end
   end

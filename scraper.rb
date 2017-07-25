@@ -28,3 +28,12 @@ class ZonaPropWebScraper
     end
   end
 end
+
+class MorphNotifier
+  def notify!(resultado)
+    ScraperWiki.save_sqlite([:id], resultado)
+  end
+end
+
+resultado = ZonaPropWebScraper.new.leer_avisos!
+[MorphNotifier.new].each { |n| n.notify! resultado }

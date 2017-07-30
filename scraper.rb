@@ -16,7 +16,7 @@ class ZonaPropWebScraper
   end
 
   def leer_avisos_con_tipo!(tipo)
-    page = @agent.get "http://www.zonaprop.com.ar/#{tipo}-alquiler-almagro-once-boedo-caballito-flores-parque-chacabuco-villa-crespo-4-ambientes.html"
+    page = @agent.get "http://www.zonaprop.com.ar/#{tipo}-alquiler-almagro-once-boedo-caballito-flores-parque-chacabuco-villa-crespo-4-ambientes-orden-publicado-descendente.html"
 
     page.search('li.post').map do |aviso|
       {

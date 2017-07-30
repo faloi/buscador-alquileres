@@ -12,7 +12,7 @@ class ZonaPropWebScraper
   end
 
   def leer_avisos!
-    leer_avisos_con_tipo!('ph') + leer_avisos_con_tipo!('casas')
+    leer_avisos_con_tipo!('ph') + leer_avisos_con_tipo!('casas') + leer_avisos_con_tipo!('departamentos')
   end
 
   def leer_avisos_con_tipo!(tipo)

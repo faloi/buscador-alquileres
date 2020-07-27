@@ -8,7 +8,10 @@ require 'active_support/all'
 
 class ZonaPropWebScraper
   def initialize
-    @agent = Mechanize.new {|a| a.ssl_version, a.verify_mode = 'SSLv23', OpenSSL::SSL::VERIFY_NONE}
+    @agent = Mechanize.new do |a| 
+      a.ssl_version, a.verify_mode = 'SSLv23', OpenSSL::SSL::VERIFY_NONE
+      a.user_agent_alias = 'Windows Chrome'
+    end
     @agent.request_headers
   end
 

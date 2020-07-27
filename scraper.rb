@@ -8,7 +8,7 @@ require 'active_support/all'
 
 class ZonaPropWebScraper
   def initialize
-    @agent = Mechanize.new
+    @agent = Mechanize.new{|a| a.ssl_version, a.verify_mode = 'SSLv3', OpenSSL::SSL::VERIFY_NONE}
   end
 
   def leer_avisos!

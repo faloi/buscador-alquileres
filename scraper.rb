@@ -11,6 +11,7 @@ class ZonaPropWebScraper
     @agent = Mechanize.new do |a| 
       a.ssl_version, a.verify_mode = 'SSLv23', OpenSSL::SSL::VERIFY_NONE
       a.user_agent_alias = 'Windows Chrome'
+      a.robots = false
     end
     @agent.request_headers
   end

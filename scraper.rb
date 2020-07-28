@@ -52,5 +52,5 @@ class TelegramNotifier
   end
 end
 
-resultado = ArgenpropScraper.leer_avisos!
+resultado = [ArgenpropScraper, ArgencasasScraper].flat_map(&:leer_avisos!)
 [LogNotifier.new, TelegramNotifier.new(ENV['MORPH_IFTTT_KEY']), MorphNotifier.new].each { |n| n.notify! resultado, ResultadoDiff.solo_nuevos(resultado) }

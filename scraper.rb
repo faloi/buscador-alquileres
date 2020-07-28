@@ -2,40 +2,10 @@ require 'net/http'
 require 'uri'
 require 'json'
 require 'scraperwiki'
-require 'mechanize'
 require 'ostruct'
 require 'active_support/all'
 
-class ZonaPropWebScraper
-  def initialize
-    @agent = Mechanize.new do |a| 
-      a.ssl_version, a.verify_mode = 'TLSv1_2', OpenSSL::SSL::VERIFY_NONE
-      a.user_agent_alias = 'Windows Chrome'
-      a.robots = false
-    end
-    @agent.request_headers
-  end
-
-  def leer_avisos!
-    leer_avisos_con_tipo!('ph') + leer_avisos_con_tipo!('casas') + leer_avisos_con_tipo!('departamento')
-  end
-
-  def leer_avisos_con_tipo!(tipo)
-    page = @agent.get "https://www.zonaprop.com.ar/#{tipo}-alquiler-gba-oeste-menos-35000-pesos-orden-publicado-descendente.html"
-
-    page.search('li.post').map do |aviso|
-      {
-        id: aviso['id'].gsub('aviso-', ''),
-        tipo: tipo,
-        titulo: aviso.search('.post-titulo').text,
-        barrio: aviso.search('.post-location span').text.gsub(', Capital Federal', ''),
-        direccion: aviso.search('.post-location').text.gsub(/\n|\t/, ''),
-        precio: aviso.search('.precio-valor').text.strip,
-        url: 'https://www.zonaprop.com.ar' + aviso.search('.post-titulo a').attr('href').value
-      }
-    end
-  end
-end
+require_relative './lib/scrapers'
 
 class ResultadoDiff
   def self.solo_nuevos(resultado)
@@ -82,5 +52,5 @@ class TelegramNotifier
   end
 end
 
-resultado = ZonaPropWebScraper.new.leer_avisos!
+resultado = ArgenpropScraper.leer_avisos!
 [LogNotifier.new, TelegramNotifier.new(ENV['MORPH_IFTTT_KEY']), MorphNotifier.new].each { |n| n.notify! resultado, ResultadoDiff.solo_nuevos(resultado) }

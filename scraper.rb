@@ -36,7 +36,7 @@ class TelegramNotifier
   end
 
   def send_message!(aviso)
-    post_json! "https://maker.ifttt.com/trigger/zonaprop_scraper/with/key/#{@ifttt_key}", {value1: "#{aviso[:titulo]} (#{aviso[:precio]})", value2: aviso[:direccion], value3: aviso[:url]}
+    post_json! "https://maker.ifttt.com/trigger/zonaprop_scraper/with/key/#{@ifttt_key}", {value1: aviso[:titulo], value2: "#{aviso[:precio]} - #{aviso[:direccion]}", value3: aviso[:url]}
   end
 
   def post_json!(url, data)
